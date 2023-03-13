@@ -132,14 +132,14 @@ interface IOrgnaization extends DefaultAttributes {
 }
 
 export interface IEndorsement extends DefaultAttributes {
-  author: ObjectId | string;
+  author: string;
   petition: ObjectId | string;
   likes: string[];
   body: string;
   likeCount: number;
 }
 
-interface Petition extends DefaultAttributes {
+interface IPetition extends DefaultAttributes {
   title: string;
   image: string[];
   aim: string;
@@ -236,8 +236,8 @@ interface ITransaction extends DefaultAttributes {
   amount: number;
   user: ObjectId | string;
   transactionId: number;
-  paid_at: Date;
-  created_at: Date;
+  paid_at: string;
+  created_at: string;
   channel: string;
   purpose: string;
   key: string;
@@ -273,7 +273,7 @@ interface IUser extends DefaultAttributes {
   country: string;
   state: string;
   city: string;
-  lastSeen: Date;
+  lastSeen: string;
   followers: string[];
   following: string[];
   orgOperating: string[];
