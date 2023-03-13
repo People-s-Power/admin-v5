@@ -24,7 +24,7 @@ if(NODE_ENV === "production" && (typeof DB_URL_PROD !== "string" || typeof DB_NA
 
 export default {
   development: {
-    MONGO_URI: `${DB_URL}/${DB_NAME}`,
+    MONGO_URI: `${DB_URL}`,
   },
   staging: {
     MONGO_URI: `${DB_URL_STAG}/${DB_NAME_STAG}`,

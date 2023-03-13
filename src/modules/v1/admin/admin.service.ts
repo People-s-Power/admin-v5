@@ -1,12 +1,13 @@
+import { endOfDay, startOfDay, subDays } from "date-fns";
+import { ObjectId } from "mongoose";
 import db from "../../../databases";
 import { IAdmin } from "../../../types";
-import { catchError } from "../../common/utils";
 import ErrorCodes from "../../common/errorCodes";
 import { hashPassword } from "../../common/hashing";
-import { endOfDay, startOfDay, subDays } from "date-fns";
+import { catchError } from "../../common/utils";
 
 class AdminService {
-  private adminModel = db.admin;
+  private model = db.admin;
 
   private id: string;
 
@@ -20,19 +21,23 @@ class AdminService {
     this.phoneNumber = phoneNumber;
   }
 
-  public async create(params: Partial<IAdmin>): Promise<IAdmin> {
-    const admin = await this.findOne().catch(e => { throw e; });
-    if(admin) throw catchError(ErrorCodes.UserExists());
-    const password = hashPassword(params.password);
-    const newAdmin = this.adminModel.create({ ...params, password }).catch((e) => {
+  public async create(params: IAdmin): Promise<IAdmin> {
+    const admin = await this.findOne().catch((e) => {
+      throw e;
+    });
+    console.log(admin)
+    if (admin) {
+      throw catchError(ErrorCodes.AdminExists().message);
+    }
+    const newadmin = await this.model.create(params).catch((e) => {
       throw e;
     });
 
-    return newAdmin;
+    return newadmin;
   }
 
-  public async findOne(): Promise<IAdmin> {
-    const admin = this.adminModel
+  public async findOne() {
+    const admin = await this.model
       .findOne({
         ...(this.id && { _id: this.id }),
         ...(this.email && { email: this.email }),
@@ -45,30 +50,66 @@ class AdminService {
     return admin;
   }
 
-  public async updateOne(params: Partial<IAdmin>) {
-    const admin = await this.findOne().catch((e) => {
-      throw e;
-    });
-    if (!admin || !admin.isActive) throw catchError(ErrorCodes.NotFound().code);
-
-    const newAdmin = await this.adminModel
-      .findOneAndUpdate({ _id: admin?._id }, { ...params }, { new: true })
+  public async findAll(page: number, limit: number): Promise<IAdmin[]> {
+    const admins = await this.model
+      .find({
+        isActive: true,
+        deletedAt: null,
+      })
+      .sort("-createdAt")
+      .limit(limit)
+      .skip(limit * (page - 1))
       .catch((e) => {
         throw e;
       });
-    return newAdmin;
+
+    return admins;
   }
 
-  public async count(category?: string) {
-    const docsCount = await this.adminModel.countDocuments({}).catch(e => { throw e; });
+  public async count() {
+    const docsCount = await this.model.countDocuments({}).catch((e) => {
+      throw e;
+    });
 
-     return docsCount;
+    return docsCount;
+  }
+
+  public async updateOne(params: Partial<IAdmin>): Promise<IAdmin> {
+    const admin = await this.findOne().catch((e) => {
+      throw e;
+    });
+
+    if (!admin)
+      throw catchError(ErrorCodes.NotFound("not found", "admin").code);
+
+    const newadmin = await this.model
+      .findOneAndUpdate({ _id: admin._id }, { ...params }, { new: true })
+      .catch((e) => {
+        throw e;
+      });
+
+    return newadmin;
+  }
+
+  public async deleteOne() {
+    const admin = await this.findOne().catch((e) => {
+      throw e;
+    });
+
+    if (!admin)
+      throw catchError(ErrorCodes.NotFound("not found", "admin").code);
+
+    await admin.deleteOne().catch((e: any) => {
+      throw e;
+    });
+
+    return admin;
   }
 
   public async getPercent() {
     const [start, end] = await Promise.all([
-      this.adminModel.countDocuments({ createdAt: { $gte: startOfDay(subDays(new Date(), 1)), $lt: startOfDay(new Date()) } }),
-      this.adminModel.countDocuments({ createdAt: { $gte: startOfDay(new Date()), $lte: endOfDay(new Date()) } }),
+      this.model.countDocuments({ createdAt: { $gte: startOfDay(subDays(new Date(), 1)), $lt: startOfDay(new Date()) } }),
+      this.model.countDocuments({ createdAt: { $gte: startOfDay(new Date()), $lte: endOfDay(new Date()) } }),
     ]);
 
     const diff = start - end;
@@ -78,17 +119,19 @@ class AdminService {
     return perc;
   }
 
+  public async deleteAdmin(){
+    const admin = await this.model.findByIdAndDelete(this.id)
+
+    return admin
+  }
+
   public getAdmin(u: IAdmin) {
     return {
       id: u._id,
-      // city: u.city,
-      // state: u.state,
       email: u.email,
-      // country: u.country,
       lastName: u.lastName,
       firstName: u.firstName,
-      // postalCode: u.postalCode,
-    }
+    };
   }
 }
 

@@ -11,7 +11,7 @@ router.use('/docs', swaggerUI.serve, swaggerUI.setup(doc));
 router.use('/v1', v1);
 
 router.use('/', (_req, res, _next) =>
-  res.send('Welcome to Hoxana API. Find the postman collection for documentation at '),
+  res.send('Welcome to People-pow API. Find the postman collection for documentation at '),
 );
 
 router.use('*', (_req, res, _next) =>

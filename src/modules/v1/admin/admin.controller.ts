@@ -1,43 +1,36 @@
-import AdminService from "./admin.service";
-import ErrorCodes from "../../common/errorCodes";
-import { matchPassword } from "../../common/hashing";
-import { AuthenticatedRequest } from "../../../types";
-import { Request, Response, NextFunction } from "express";
-import { catchError, generateToken, success } from "../../common/utils";
 import { ObjectId } from "mongoose";
+import { Request, NextFunction, Response } from "express";
 
-export const signUp = async (
+import AdminService from "./admin.service";
+import { AuthenticatedRequest } from "../../../types";
+import { hashPassword, matchPassword } from "../../common/hashing";
+import { catchError, generateToken, success } from "../../common/utils";
+
+export const addAdmin = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { email, lastName, password, firstName, phoneNumber } = req.body;
+  const { role, email, address, lastName, password, firstName, phoneNumber } = req.body;
   try {
-    const admin = await new AdminService(email, phoneNumber)
-      .create({
-        email,
-        lastName,
-        password,
-        firstName,
-        phoneNumber,
-      })
-      .catch((e) => {
-        throw catchError(
-          e === ErrorCodes.UserExists()
-            ? "You already have an account"
-            : "An error occured"
-        );
-      });
+    const newAdmin = await new AdminService(email, phoneNumber).create({
+      email,
+      address,
+      lastName,
+      password: hashPassword(password),
+      firstName,
+      phoneNumber,
+      role,
+      isActive: true,
+    });
 
     return res.status(201).json(
-      success("Account successfully created", {
-        admin: new AdminService().getAdmin(admin),
-      })
-    );
+      success('Admin added successfully', newAdmin),
+    )
   } catch (error) {
     next(error);
   }
-};
+}
 
 export const login = async (
   req: Request,
@@ -47,8 +40,7 @@ export const login = async (
   const { email, password } = req.body;
   try {
     const service = new AdminService(email);
-    const admin = await service.findOne().catch((e) => {
-      console.log(e);
+    const admin = await service.findOne().catch(() => {
       throw catchError("An error occured");
     });
 
@@ -58,33 +50,19 @@ export const login = async (
     const matched = matchPassword(password, admin.password);
     if (!matched) throw catchError("Email/Password is incorrect");
 
-    // update lastlogged in
-    // await service
-    //   .updateOne({ lastLoggedIn: new Date().toISOString() })
-    //   .catch((e) => {
-    //     throw catchError(
-    //       e.message === ErrorCodes.NotFound().code
-    //         ? "Suspended post cannot login"
-    //         : "An error occured"
-    //     );
-    //   });
-
     // generate token
     const token = generateToken({
       id: admin._id,
-      email: admin?.email,
-      phoneNumber: admin?.phoneNumber,
+      role: admin?.role,
+      email: admin.email,
+      phoneNumber: admin.phoneNumber,
     });
+
+    const result = service.getAdmin(admin)
 
     return res
       .status(200)
-      .json(
-        success(
-          "Logged in successfully",
-          { admin: service.getAdmin(admin) },
-          { token }
-        )
-      );
+      .json(success("Logged in successfully", { admin: result }, { token }));
   } catch (error) {
     next(error);
   }
@@ -93,25 +71,89 @@ export const login = async (
 export const profile = async (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
-  const email = req.admin?.email;
-  const id =req.admin?.id;
-  console.log(email, id);
+  const { id } = req.admin;
   try {
-    const admin = await new AdminService(email, "", id).findOne().catch(() => {
-      throw catchError("An error occurred");
-    });
+    const adminId = id;
+    const admin = await new AdminService('', '', adminId)
+      .findOne()
+      .catch(() => {
+        throw catchError("An error occurred");
+      });
 
     if (!admin || !admin.isActive) throw catchError("Invalid account");
 
     return res.status(200).json(
       success("Profile retrieved successfully", {
-        admin: new AdminService().getAdmin(admin),
+        user: new AdminService().getAdmin(admin),
       })
     );
   } catch (error) {
     next(error);
   }
 };
+
+export const editProfile = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const {
+    admin: { id },
+    body: { address, lastName, isActive, firstName, phoneNumber, newPassword },
+  } = req;
+  try {
+    const adminId = id
+    const admin = await new AdminService("", "", adminId)
+      .findOne()
+      .catch(() => {
+        throw catchError("An error occurred!", 500);
+      });
+
+    if (!admin) throw catchError("Admin does not exist", 400);
+
+    const hashedPassword = newPassword ? hashPassword(newPassword) : null;
+
+    const newAdmin = await new AdminService(
+      admin?.email,
+      admin?.phoneNumber,
+      adminId
+    )
+      .updateOne({
+        ...(address && { address }),
+        ...(lastName && { lastName }),
+        ...(isActive && { isActive }),
+        ...(firstName && { firstName }),
+        ...(phoneNumber && { phoneNumber }),
+        ...(hashedPassword && { password: String(hashPassword) }),
+      })
+      .catch(() => {
+        throw catchError("An error occured!", 500);
+      });
+
+    return res
+      .status(200)
+      .json(success("Profile updated successfully", { admin: newAdmin }));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const param = req.params.id
+    const result = await new AdminService("", "", param).deleteAdmin()
+
+    return res
+        .status(201)
+        .json(success("Admin Deleted", { admin: result }));
+  } catch (error) {
+    next(error)
+  }
+}
 

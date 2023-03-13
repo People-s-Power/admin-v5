@@ -1,12 +1,12 @@
-import adminRouter from "./admin/admin.routes";
+import adminRouter from "./admin/admin.route";
 import { Authenticate } from "../common/utils";
 import { Router, Response, NextFunction } from "express";
+import userRouter from "./user/user.routes";
 
 const router = Router();
 
 router.use("/admin", adminRouter);
-// router.use('/order', Authenticate, orderRouter);
-// router.use('/exports', exportRouter);
+router.use('/user', userRouter)
 
 router.use("/", async (_req, res: Response, _next: NextFunction) =>
   res.send("Welcome to People-pow admin API")
