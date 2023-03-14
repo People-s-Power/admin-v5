@@ -15,7 +15,7 @@ export const shares = async (
 
     return res
         .status(200)
-        .json(success("shares retrieved", { share }));
+        .json(success("shares retrieved", { shares }));
   } catch (error) {
     next(error)
   }

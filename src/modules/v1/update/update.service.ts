@@ -19,6 +19,7 @@ class UpdateService {
   public async findAll(limit?: number, page?: number) {
     const updates = await this.model
     .find()
+    .populate('petition')
     .sort("-createdAt")
     .limit(limit)
     .skip(limit * (page - 1))
@@ -32,7 +33,7 @@ class UpdateService {
     const Update = await this.model
       .findOne({
         ...(this.id && { _id: this.id })
-      })
+      }).populate('petition')
       .catch((e) => {
         throw e;
       });
