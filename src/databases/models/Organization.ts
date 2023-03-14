@@ -80,4 +80,4 @@ const OrgSchema: Schema = new Schema<IOrgnaization>({
 
 OrgSchema.set('timestamps', true)
 
-export default db.model<IOrgnaization>('Organization')
+export default db.model<IOrgnaization>('Organization', OrgSchema)
