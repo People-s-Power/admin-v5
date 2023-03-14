@@ -21,6 +21,7 @@ class PetitionService {
     .find()
     .sort("-createdAt")
     .populate('updates')
+    .populate('endorsements')
     .limit(limit)
     .skip(limit * (page - 1))
     .catch(e => { throw e; });
@@ -34,7 +35,9 @@ class PetitionService {
     const petition = await this.model
       .findOne({
         ...(this.id && { _id: this.id })
-      }).populate('updates')
+      })
+      .populate('updates')
+      .populate('endorsements')
       .catch((e) => {
         throw e;
       });

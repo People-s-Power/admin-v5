@@ -202,6 +202,7 @@ interface IReport extends DefaultAttributes {
   authorId: string;
   authorEmail: string;
   authorImage: string;
+  resolved: boolean;
 }
 
 

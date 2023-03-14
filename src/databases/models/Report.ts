@@ -36,6 +36,10 @@ const ReportSchema: Schema = new Schema<IReport>({
     type: String,
     required: true
   },
+  resolved: {
+    type: Boolean,
+    default: false
+  }
 },{
   collection: "reports",
 })
