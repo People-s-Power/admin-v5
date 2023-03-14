@@ -2,10 +2,10 @@ import mongoose from 'mongoose';
 
 import config from './config';
 
-const { NODE_ENV = 'development' } = process.env;
+const { DB_URL } = process.env;
 
 // eslint-disable-next-line import/prefer-default-export
-export const db: mongoose.Connection = mongoose.createConnection(config[NODE_ENV].MONGO_URI);
+export const db: mongoose.Connection = mongoose.createConnection(DB_URL);
 
 mongoose.set('debug', true);
 
