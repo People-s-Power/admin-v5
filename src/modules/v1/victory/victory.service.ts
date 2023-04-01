@@ -57,6 +57,16 @@ class VictoryService {
     return newVictory;
   }
 
+  public async count(category?: string, isActive?: boolean) {
+    const docsCount = await this.model
+      .countDocuments()
+      .catch((e) => {
+        throw e;
+      });
+
+    return docsCount;
+  }
+
 
   public async delete(){
     const victory = await this.model.findByIdAndDelete(this.id)

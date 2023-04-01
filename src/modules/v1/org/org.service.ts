@@ -56,6 +56,16 @@ class OrgService {
     return neworg;
   }
 
+  public async count(category?: string, isActive?: boolean) {
+    const docsCount = await this.model
+      .countDocuments()
+      .catch((e) => {
+        throw e;
+      });
+
+    return docsCount;
+  }
+
 
   public async delete(){
     const org = await this.model.findByIdAndDelete(this.id)

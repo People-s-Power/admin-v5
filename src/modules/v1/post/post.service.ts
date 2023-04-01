@@ -58,6 +58,16 @@ class PostService {
     return newPost;
   }
 
+  public async count(category?: string, isActive?: boolean) {
+    const docsCount = await this.model
+      .countDocuments()
+      .catch((e) => {
+        throw e;
+      });
+
+    return docsCount;
+  }
+
 
   public async delete(){
     const post = await this.model.findByIdAndDelete(this.id)

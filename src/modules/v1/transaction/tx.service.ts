@@ -58,6 +58,16 @@ class TxService {
     return newTx;
   }
 
+  public async count(category?: string, isActive?: boolean) {
+    const docsCount = await this.model
+      .countDocuments()
+      .catch((e) => {
+        throw e;
+      });
+
+    return docsCount;
+  }
+
 
   public async delete(){
     const tx = await this.model.findByIdAndDelete(this.id)

@@ -56,6 +56,16 @@ class AdvertService {
     return newAdvert;
   }
 
+  public async count(category?: string, isActive?: boolean) {
+    const docsCount = await this.model
+      .countDocuments()
+      .catch((e) => {
+        throw e;
+      });
+
+    return docsCount;
+  }
+
 
   public async delete(){
     const advert = await this.model.findByIdAndDelete(this.id)

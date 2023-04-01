@@ -65,10 +65,14 @@ class UserService {
     return newUser;
   }
 
-  public async count(category?: string) {
-    const docsCount = await this.userModel.countDocuments({}).catch(e => { throw e; });
+  public async count(category?: string, isActive?: boolean) {
+    const docsCount = await this.userModel
+      .countDocuments()
+      .catch((e) => {
+        throw e;
+      });
 
-     return docsCount;
+    return docsCount;
   }
 
   public async deleteUser(){

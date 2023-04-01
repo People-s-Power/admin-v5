@@ -2,6 +2,14 @@ import { ObjectId } from "mongoose";
 import { Request, NextFunction, Response } from "express";
 
 import AdminService from "./admin.service";
+import UserService from "../user/user.service";
+import OrgService from "../org/org.service";
+import PostService from "../post/post.service";
+import PetitionService from "../petition/petition.service";
+import Eventservice from "../event/event.service";
+import AdvertService from "../advert/advert.service";
+import ShareService from "../share/share.service";
+import VictoryService from "../victory/victory.service";
 import { AuthenticatedRequest } from "../../../types";
 import { hashPassword, matchPassword } from "../../common/hashing";
 import { catchError, generateToken, success } from "../../common/utils";
@@ -139,6 +147,31 @@ export const editProfile = async (
     next(error);
   }
 };
+
+export const count = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const [users, orgs, posts, petitions, events, adverts, victories, shares] = await Promise.all([
+      new UserService().count(),
+      new OrgService().count(),
+      new PostService().count(),
+      new PetitionService().count(),
+      new Eventservice().count(),
+      new AdvertService().count(),
+      new VictoryService().count(),
+      new ShareService().count(),
+    ])
+
+    return res
+        .status(200)
+        .json(success("Admin Count", { users, orgs, posts, petitions, events, adverts, victories, shares }));
+  } catch (error) {
+    next(error)
+  }
+}
 
 export const deleteAdmin = async (
   req: Request,
