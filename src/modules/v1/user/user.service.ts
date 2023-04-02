@@ -55,7 +55,7 @@ class UserService {
     const user = await this.findOne().catch((e) => {
       throw e;
     });
-    if (!user || !user.isActive) throw catchError(ErrorCodes.NotFound().code);
+    if (!user) throw catchError(ErrorCodes.NotFound().code);
 
     const newUser = await this.userModel
       .findOneAndUpdate({ _id: user?._id }, { ...params }, { new: true })

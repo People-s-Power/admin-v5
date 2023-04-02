@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { Authenticate, staffPermission, validate } from "../../common/utils";
-import { addAdmin, editProfile, login, profile , deleteAdmin, count} from "./admin.controller";
-import { addAdminRule, dashboardDataRule, editProfileRule, loginRule } from "./admin.validation";
+import { addAdmin, editProfile, login, profile , deleteAdmin, count, sendMessage} from "./admin.controller";
+import { addAdminRule, sendDmValidation, editProfileRule, loginRule } from "./admin.validation";
 
 const adminRouter = Router();
 
@@ -12,7 +12,9 @@ adminRouter.route('/profile')
     .put(Authenticate, editProfileRule(), validate, editProfile);
 
 
-adminRouter.get('/count', Authenticate, count)
+adminRouter
+    .get('/count', Authenticate, count)
+    .post('/send-message', Authenticate, sendDmValidation(), validate, sendMessage)
 
 
 adminRouter.delete('/delete/:id', Authenticate, staffPermission(['super-admin']), deleteAdmin)

@@ -129,6 +129,7 @@ interface IOrgnaization extends DefaultAttributes {
   country: string;
   city: string;
   website: string;
+  socketId: string;
 }
 
 export interface IEndorsement extends DefaultAttributes {
@@ -280,6 +281,7 @@ interface IUser extends DefaultAttributes {
   orgOperating: string[];
   createdOrg: boolean;
   interests: string[];
+  socketId: string;
 }
 
 interface IVictory extends DefaultAttributes {
@@ -291,4 +293,35 @@ interface IVictory extends DefaultAttributes {
   status: string;
   comments: IComments[];
   views: string;
+}
+
+interface MessageUser{
+  _id: string;
+  name: string;
+  email: string;
+  image: string;
+  description: string;
+}
+
+
+interface IOneToOneMessage extends DefaultAttributes {
+  participants: string[]
+  messages: IMesssage[]
+  users: MessageUser[]
+  type: string;
+  reviews: IReview[]
+}
+
+enum MessageType {
+  TEXT = 'text',
+  FILE = 'file',
+}
+
+interface ISendDM {
+  category: string;
+  subCategory: string;
+  country: string;
+  city: string;
+  userId: string;
+  message: string;
 }

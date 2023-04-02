@@ -6,8 +6,24 @@ import ErrorCodes from "../../common/errorCodes";
 import { hashPassword } from "../../common/hashing";
 import { catchError } from "../../common/utils";
 
+enum MessageType {
+  TEXT = 'text',
+  FILE = 'file',
+}
+
+interface ISendDM {
+  category: string;
+  subCategory: string;
+  country: string;
+  city: string;
+  userId: string;
+  message: string;
+}
 class AdminService {
   private model = db.admin;
+  private userModel = db.user;
+  private orgModel = db.Organization;
+  private oneToOneMessageModel = db.Message;
 
   private id: string;
 
@@ -19,6 +35,96 @@ class AdminService {
     this.id = id;
     this.email = email;
     this.phoneNumber = phoneNumber;
+  }
+
+  async sendMessage(payload: ISendDM) {
+    // Filter users and orgs then get socketIds and send to client
+
+    const [users, orgs] = await Promise.all([
+      this.userModel.find({
+        interests: { $in: [payload.subCategory] },
+        country: payload.country,
+        city: payload.city,
+      }),
+      this.orgModel.find({
+        category: { $in: [payload.category] },
+        subCategory: { $in: [payload.subCategory] },
+        country: payload.country,
+        city: payload.city,
+      })
+    ])
+
+    const message = `${payload.message} Send a message ${payload.userId}`
+    const foundUsers = [
+      ...users, ...orgs
+    ]
+
+    // Return message and user socketIds then map through them and send to client
+
+    await Promise.all(foundUsers.map(async (user) => {
+      if(user.socketId){
+        const participants = [user._id, 'bot']
+
+        const users = [
+          {
+            _id: user._id,
+            name: user.name ,
+            email: user.email,
+            image: user.image,
+            description: user.description
+          },
+          {
+            _id: 'bot',
+            name: 'Peoples Power',
+            email: '',
+            image: '',
+          }
+        ]
+
+        const dm = await this.getDm(participants);
+        if(dm){
+          dm.messages.push({
+            from: 'bot',
+            to: user._id,
+            text: message,
+            type: MessageType.TEXT,
+            createdAt: `${(new Date()).toJSON()}`
+        })
+          await dm.save()
+          // console.log(dm)
+          return dm
+          }
+
+        const newDm = await this.oneToOneMessageModel.create({
+          participants,
+          messages: [{
+              from: 'bot',
+              to: user._id,
+              text: message,
+              type: 'text',
+              createdAt: `${(new Date()).toJSON()}`
+          }],
+          users,
+          type: 'support-to-consumer',
+        })
+        // console.log(newDm)
+        return newDm
+      }
+    }))
+
+    return {
+      message,
+      foundUsers
+    }
+  }
+
+
+  async getDm(participants: string[]) {
+    const dm = await this.oneToOneMessageModel.findOne({
+      participants: { $size: 2, $all: participants },
+    });
+
+    return dm;
   }
 
   public async create(params: IAdmin): Promise<IAdmin> {

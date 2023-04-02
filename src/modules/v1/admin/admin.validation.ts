@@ -71,8 +71,10 @@ export const editProfileRule = () => [
     }),
 ];
 
-export const dashboardDataRule = () => [
-  query('limit').isString().withMessage('Add valid limit').optional(),
-  query('revenueFilter').isIn(['daily', 'monthly', 'yearly']).withMessage('Filter can only contain daily, monthly and yearly').optional(),
-  query('listingEventFilter').isIn(['daily', 'monthly', 'yearly']).withMessage('Filter can only contain daily, monthly and yearly').optional(),
+export const sendDmValidation = () => [
+  body('category').isString().withMessage('Enter category').notEmpty(),
+  body('message').isString().withMessage('Enter message').notEmpty(),
+  body('subCategory').isString().withMessage('Enter subCategory'),
+  body('country').isString().withMessage('Enter country').notEmpty(),
+  body('city').isString().withMessage('Enter city').notEmpty(),
 ];

@@ -40,6 +40,38 @@ export const addAdmin = async (
   }
 }
 
+export const sendMessage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { 
+      category,
+      subCategory,
+      country,
+      city,
+      userId,
+      message,
+     } = req.body;
+
+     const messageRes = await new AdminService().sendMessage({
+        category,
+        subCategory,
+        country,
+        city,
+        userId,
+        message,
+     })
+
+     return res.status(201).json(
+      success('Message sent successfully', messageRes),
+    )
+  } catch (error) {
+    next(error);
+  }
+ }
+
 export const login = async (
   req: Request,
   res: Response,
