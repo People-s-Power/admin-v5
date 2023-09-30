@@ -68,6 +68,8 @@ export async function Authenticate(
       throw catchError("Authorization Header not provided!", 403);
     }
 
+    console.log(token)
+
     const user = jwt.verify(token, SECRET) as { identity: string; exp: number };
     const data = new AuthenticationService(user.identity).decrypt();
     // console.log(data, 'dd');
