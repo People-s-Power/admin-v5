@@ -2,6 +2,15 @@ import { Schema } from "mongoose";
 import { db } from "../connection";
 import { IVictory } from "../../types";
 
+enum IStatusEnum {
+  Active = 'Active',
+  Pending = 'Pending',
+  Finished = 'Finished',
+  Draft = 'Draft',
+  Promoted = 'Promoted',
+  Blocked = 'Blocked'
+}
+
 const VictorySchema: Schema = new Schema<IVictory>({
   body: {
     type: String,
@@ -31,7 +40,8 @@ const VictorySchema: Schema = new Schema<IVictory>({
   },
   status: {
     type: String,
-    required: true
+    enum: IStatusEnum,
+    default: IStatusEnum.Active,
   },
   comments: [
     {

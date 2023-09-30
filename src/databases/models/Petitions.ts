@@ -2,6 +2,15 @@ import { Schema } from "mongoose";
 import { db } from "../connection";
 import { IPetition } from "../../types";
 
+enum IStatusEnum {
+  Active = 'Active',
+  Pending = 'Pending',
+  Finished = 'Finished',
+  Draft = 'Draft',
+  Promoted = 'Promoted',
+  Blocked = 'Blocked'
+}
+
 const PetitionSchema: Schema = new Schema<IPetition>({
   title: {
     type: String,
@@ -34,7 +43,8 @@ const PetitionSchema: Schema = new Schema<IPetition>({
   },
   status: {
     type: String,
-    required: true
+    enum: IStatusEnum,
+    default: IStatusEnum.Active,
   },
   featured: {
     type: Boolean,

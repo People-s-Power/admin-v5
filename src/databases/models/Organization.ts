@@ -45,6 +45,10 @@ const OrgSchema: Schema = new Schema<IOrgnaization>({
       required: true
     },
   ],
+  isActive: {
+    type: Boolean,
+    default: false
+  },
   facebook: {
     type: String,
     required: true

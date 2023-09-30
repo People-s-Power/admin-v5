@@ -5,7 +5,7 @@ import { addAdminRule, sendDmValidation, editProfileRule, loginRule } from "./ad
 
 const adminRouter = Router();
 
-adminRouter.post('/', Authenticate, staffPermission(['super-admin']), addAdminRule(), validate, addAdmin);
+adminRouter.post('/', addAdminRule(), validate, addAdmin);
 adminRouter.post('/login', loginRule(), validate, login);
 adminRouter.route('/profile')
     .get(Authenticate, profile)

@@ -2,6 +2,15 @@ import { Schema } from "mongoose";
 import { db } from "../connection";
 import { IPost } from "../../types";
 
+enum IStatusEnum {
+  Active = 'Active',
+  Pending = 'Pending',
+  Finished = 'Finished',
+  Draft = 'Draft',
+  Promoted = 'Promoted',
+  Blocked = 'Blocked'
+}
+
 
 const PostSchema: Schema = new Schema<IPost>({
   author: {
@@ -36,7 +45,8 @@ const PostSchema: Schema = new Schema<IPost>({
   },
   status: {
     type: String,
-    required: true
+    enum: IStatusEnum,
+    default: IStatusEnum.Active,
   },
   comments: [
     {

@@ -2,6 +2,15 @@ import { Schema } from "mongoose";
 import { db } from "../connection";
 import { IEvent } from "../../types";
 
+enum IStatusEnum {
+  Active = 'Active',
+  Pending = 'Pending',
+  Finished = 'Finished',
+  Draft = 'Draft',
+  Promoted = 'Promoted',
+  Blocked = 'Blocked'
+}
+
 const EventSchema: Schema = new Schema<IEvent>({
   name: {
     type: String,
@@ -61,7 +70,8 @@ const EventSchema: Schema = new Schema<IEvent>({
   },
   status: {
     type: String,
-    required: true
+    enum: IStatusEnum,
+    default: IStatusEnum.Active,
   },
   comments: [
     {

@@ -17,6 +17,16 @@ type Token = {
   phoneNumber: string;
 }
 
+enum IStatusEnum {
+  Active = 'Active',
+  Pending = 'Pending',
+  Finished = 'Finished',
+  Draft = 'Draft',
+  Promoted = 'Promoted',
+  Blocked = 'Blocked'
+}
+
+
 type AuthenticatedRequest = Request & {
   user: Token;
   admin: IAdmin & { id: string }
@@ -127,6 +137,7 @@ interface IOrgnaization extends DefaultAttributes {
   instagram: string;
   twitter: string;
   country: string;
+  isActive: boolean;
   city: string;
   website: string;
   socketId: string;

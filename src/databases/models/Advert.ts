@@ -2,6 +2,14 @@ import { Schema } from "mongoose";
 import { db } from "../connection";
 import { IAdvert } from "../../types";
 
+enum IStatusEnum {
+  Active = 'Active',
+  Pending = 'Pending',
+  Finished = 'Finished',
+  Draft = 'Draft',
+  Promoted = 'Promoted',
+  Blocked = 'Blocked'
+}
 
 const AdvertSchema: Schema = new Schema<IAdvert>({
   caption: {
@@ -56,7 +64,8 @@ const AdvertSchema: Schema = new Schema<IAdvert>({
   },
   status: {
     type: String,
-    required: true
+    enum: IStatusEnum,
+    default: IStatusEnum.Active,
   },
   comments: [{
     _id: {
