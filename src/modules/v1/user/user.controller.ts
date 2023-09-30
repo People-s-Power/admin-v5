@@ -50,6 +50,9 @@ export const editUser =async (req: AuthenticatedRequest,
     const param = req.params.id
     const user = await new UserService("", "", param).updateOne(req.body)
 
+    return res
+    .status(200)
+    .json(success("User updated", { user: user }));
   }catch (error) {
     next(error);
   }
