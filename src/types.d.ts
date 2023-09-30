@@ -26,6 +26,15 @@ enum IStatusEnum {
   Blocked = 'Blocked'
 }
 
+export enum AccountTypeEnum {
+  Campaigner = 'Campaigner',
+  Admin = 'Admin',
+  Editor = 'Editor',
+  Staff = 'Staff',
+  Applicant = 'Applicant',
+  Contact = 'Contact',
+}
+
 
 type AuthenticatedRequest = Request & {
   user: Token;

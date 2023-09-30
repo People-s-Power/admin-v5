@@ -43,6 +43,18 @@ export const singleUser = async (
 
 }
 
+export const editUser =async (req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction) => {
+  try{
+    const param = req.params.id
+    const user = await new UserService("", "", param).updateOne(req.body)
+
+  }catch (error) {
+    next(error);
+  }
+}
+
 export const deleteUser =async (
   req: Request,
   res: Response,
