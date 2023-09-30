@@ -23,7 +23,6 @@ class UserService {
   public async findAll(page?: number, limit?: number): Promise<IUser[]> {
     const users = await this.userModel
       .find({
-        isActive: true,
         deletedAt: null,
       })
       .select('-password')
