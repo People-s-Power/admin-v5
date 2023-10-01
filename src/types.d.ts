@@ -345,3 +345,26 @@ interface ISendDM {
   userId: string;
   message: string;
 }
+
+interface IActivity extends DefaultAttributes{
+  authorId: string;
+  activity_type: ActivityType;
+  item: ItemType;
+  text: string;
+}
+
+enum ActivityType {
+  EDIT = 'EDIT',
+  CREATE = 'CREATE',
+  DELETE = 'DELETE',
+  PAYMENT = 'PAYMENT'
+  
+}
+
+enum ItemType {
+  POST = 'POST',
+  PETITION = 'PETITION',
+  EVENT = 'EVENT',
+  ADVERT = 'ADVERT',
+  VICTORY = 'VICTORY'
+}

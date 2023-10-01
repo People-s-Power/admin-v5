@@ -5,6 +5,7 @@ import { IAdmin } from "../../../types";
 import ErrorCodes from "../../common/errorCodes";
 import { hashPassword } from "../../common/hashing";
 import { catchError } from "../../common/utils";
+import UserService from "../user/user.service";
 
 enum MessageType {
   TEXT = 'text',
@@ -223,6 +224,22 @@ class AdminService {
     const abs = (diff === 0 && avg === 0) ? 0 : Math.abs(diff) / avg;
     const perc = abs * 100;
     return perc;
+  }
+
+
+  public async assign(userId, orgId) {
+    const user = await this.userModel.findById(userId)
+    if(!user) throw catchError('User not found', 404);
+    if(user.accountType === 'Campaigner') throw catchError('Not allowed user is a Campaigner', 400);
+    const org = await this.orgModel.findById(orgId)
+
+    if (!org) throw catchError('Org not found', 404);
+
+    user.orgOperating.push(orgId)
+    await user.save()
+
+    const result = new UserService('', '', '').getUser(user)
+    return result;
   }
 
   public async deleteAdmin(){

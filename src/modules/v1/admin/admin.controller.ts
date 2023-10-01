@@ -205,6 +205,24 @@ export const count = async (
   }
 }
 
+export const assign = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { userId, orgId } = req.body;
+
+    const result = await new AdminService('', '', '').assign(userId, orgId)
+
+    return res
+        .status(201)
+        .json(success("User assiged", { user: result }));
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const deleteAdmin = async (
   req: Request,
   res: Response,

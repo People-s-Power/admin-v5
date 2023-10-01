@@ -78,3 +78,8 @@ export const sendDmValidation = () => [
   body('country').isString().withMessage('Enter country').notEmpty(),
   body('city').isString().withMessage('Enter city').notEmpty(),
 ];
+
+export const assignRule = () => [
+  body('userId').isString().withMessage('Enter User id').notEmpty(),
+  body('orgId').isString().withMessage('Enter org id').notEmpty(),
+];
