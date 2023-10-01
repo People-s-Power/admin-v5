@@ -151,7 +151,7 @@ export const editProfile = async (
         throw catchError("An error occurred!", 500);
       });
 
-    if (!admin) throw catchError("Admin does not exist", 400);
+    if (!admin) throw catchError("Admin does not exist", 404);
 
     const hashedPassword = newPassword ? hashPassword(newPassword) : null;
 

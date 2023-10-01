@@ -108,6 +108,7 @@ class UserService {
       isActive: u.isActive,
       role: u.role,
       reps: u.reps,
+      accountType: u.accountType,
       followers: u.followers,
       following: u.following,
       orgOperating: u.orgOperating,
