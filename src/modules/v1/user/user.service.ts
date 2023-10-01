@@ -1,5 +1,5 @@
 import db from "../../../databases";
-import { IUser } from "../../../types";
+import { AccountTypeEnum, IUser } from "../../../types";
 import { catchError } from "../../common/utils";
 import ErrorCodes from "../../common/errorCodes";
 import { hashPassword } from "../../common/hashing";
@@ -18,6 +18,21 @@ class UserService {
     this.id = id;
     this.email = email;
     this.phoneNumber = phoneNumber;
+  }
+
+  public async create(name: string, email: string, password: string, accountType: AccountTypeEnum): Promise<IUser> {
+    const payload = {
+      email,
+      name,
+      password: hashPassword(password),
+      emailToken: (Math.floor(Math.random() * 90000) + 10000).toString(),
+      firstName: name?.split(' ')?.[0],
+      lastName: name?.split(' ')?.[1],
+      accountType
+    }
+    const user = await this.userModel.create(payload)
+
+    return user;
   }
 
   public async findAll(page?: number, limit?: number): Promise<IUser[]> {

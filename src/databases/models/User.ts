@@ -2,6 +2,15 @@ import { Schema } from "mongoose";
 import { db } from "../connection";
 import { IUser } from "../../types";
 
+export enum AccountTypeEnum {
+  Campaigner = 'Campaigner',
+  Admin = 'Admin',
+  Editor = 'Editor',
+  Staff = 'Staff',
+  Applicant = 'Applicant',
+  Contact = 'Contact',
+}
+
 const userSchema: Schema = new Schema<IUser>({
   name: {
     type: String,
@@ -12,28 +21,25 @@ const userSchema: Schema = new Schema<IUser>({
   },
   facebookId: {
     type: String,
-    required: true
   },
   accountType: {
     type: String,
+    enum: AccountTypeEnum,
+    default: AccountTypeEnum.Editor,
     required: true
   },
   image: {
     type: String,
-    required: true
   },
   firstName: {
     type: String,
-    required: true
   },
 
   lastName: {
     type: String,
-    required: true
   },
   description: {
     type: String,
-    required: true
   },
   email: {
     type: String,
@@ -46,7 +52,6 @@ const userSchema: Schema = new Schema<IUser>({
   },
   phone: {
     type: String,
-    required: true
   },
   emailToken: {
     type: String,
@@ -62,11 +67,9 @@ const userSchema: Schema = new Schema<IUser>({
   },
   role: {
     type: String,
-    required: true
   },
   address: {
     type: String,
-    required: true
   },
   bankName: {
     type: String,
@@ -79,19 +82,15 @@ const userSchema: Schema = new Schema<IUser>({
   },
   country: {
     type: String,
-    required: true
   },
   state: {
     type: String,
-    required: true
   },
   city: {
     type: String,
-    required: true
   },
   lastSeen: {
     type: String,
-    required: true
   },
   followers: [
     {
@@ -108,7 +107,6 @@ const userSchema: Schema = new Schema<IUser>({
   ],
   createdOrg: {
     type: Boolean,
-    required: true
   },
   interests: [{
     type: String,
