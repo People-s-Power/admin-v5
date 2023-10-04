@@ -12,6 +12,7 @@ import Organization from "./models/Organization";
 import Transaction from "./models/Transaction";
 import Advert from "./models/Advert";
 import Message from "./models/Message";
+import Activity from "./models/Activity";
 
 const db = {
     admin,
@@ -27,6 +28,7 @@ const db = {
     Report,
     Share,
     Message,
+    Activity
 }
 
 export default db;

@@ -27,6 +27,9 @@ const ActivitySchema: Schema = new Schema<IActivity>(
     authorId: {
       type: Schema.Types.ObjectId, ref: 'User'
     },
+    orgId: {
+      type: Schema.Types.ObjectId, ref: 'orgnaizations'
+    },
     activity_type: {
       type: String,
       enum: ActivityType,

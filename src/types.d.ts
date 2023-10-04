@@ -7,6 +7,7 @@ interface DefaultAttributes {
   deletedAt?: string;
   createdAt?: string;
   updatedAt?: string;
+  addAsset?(asset: IAsset[]): any;
 }
 
 type CreateErr = (message: string, code?: number, validations?: object) => Error;
@@ -90,7 +91,14 @@ type iCategory =
   | 'Development'
   | 'Disability';
 
-
+interface IAsset {
+  url: string;
+  type: AssetEnum;
+}
+enum AssetEnum {
+  image = 'image',
+  video = 'video'
+}
 interface IAdvert extends DefaultAttributes {
   caption: string;
   message: string;
@@ -102,6 +110,10 @@ interface IAdvert extends DefaultAttributes {
   image: string[];
   shares: string[];
   likes: string[];
+  asset: IAsset[]
+  country: string;
+  state: string;
+  promotedFor: []
   promoted: boolean;
   author: string;
   status: string;
@@ -348,6 +360,7 @@ interface ISendDM {
 
 interface IActivity extends DefaultAttributes{
   authorId: string;
+  orgId: string;
   activity_type: ActivityType;
   item: ItemType;
   text: string;

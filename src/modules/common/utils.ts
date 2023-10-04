@@ -42,7 +42,6 @@ export const staffPermission = (permission: string[]) => {
     if (!req.admin)
       throw catchError("You do not have permission to use this route", 400);
     const { role } = req.admin;
-    console.log(role, permission);
     const userHasPermission = permission.find((item) => item.includes(role));
 
     if (!userHasPermission)

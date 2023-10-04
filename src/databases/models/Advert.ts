@@ -40,10 +40,6 @@ const AdvertSchema: Schema = new Schema<IAdvert>({
     type: String,
     required: true
   },
-  image: [{
-    type: String,
-    required: true
-  }],
   shares: [
     {
     type: String,
@@ -62,6 +58,32 @@ const AdvertSchema: Schema = new Schema<IAdvert>({
     type: String,
     required: true
   },
+  asset: [
+    {
+      url: {
+        type: String,
+        required: true
+      },
+      type: {
+        type: String,
+        required: true
+      },
+    }
+  ],
+  country: {
+    type: String,
+    required: true
+  },
+  state: {
+    type: String,
+    required: true
+  },
+  promotedFor: [
+    {
+      type: String,
+      required: true
+    }
+  ],
   status: {
     type: String,
     enum: IStatusEnum,
@@ -95,12 +117,17 @@ const AdvertSchema: Schema = new Schema<IAdvert>({
   ],
   numberOfPaidViewsCount: {
     type: Number,
-    required: true
   },
 },
 {
   collection: "adverts",
 })
+
+
+AdvertSchema.methods.addAsset = function (asset) {
+  this.asset = asset
+  return this.save()
+}
 
 AdvertSchema.set('timestamps', true)
 

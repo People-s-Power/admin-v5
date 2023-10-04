@@ -1,8 +1,22 @@
 import db from "../../../databases";
-import { IAdvert } from "../../../types";
+import { IAdvert, IAsset } from "../../../types";
 import ErrorCodes from "../../common/errorCodes";
+import { assetsUpload } from "../../common/uploadImage";
 import { catchError } from "../../common/utils";
 
+interface CreateAdvert {
+  caption: string;
+  message: string;
+  action: string;
+  audience: string;
+  duration: string;
+  email: string;
+  link: string;
+  assets: IAsset[],
+  state:string;
+  country: string;
+  author: string;
+}
 
 class AdvertService {
   private model = db.Advert
@@ -15,6 +29,14 @@ class AdvertService {
     this.id = id
   }
 
+  public async create (params: CreateAdvert) {
+    const asset = await assetsUpload(params.assets)
+    const advert = await this.model.create(params)
+
+    await advert.addAsset(asset)
+
+    return advert
+  }
 
   public async findAll(limit?: number, page?: number) {
     const advert = await this.model
@@ -27,7 +49,7 @@ class AdvertService {
     return advert
   }
 
-  public async findOne() {
+  public async findOne(): Promise<IAdvert> {
     const advert = await this.model
       .findOne({
         ...(this.id && { _id: this.id })

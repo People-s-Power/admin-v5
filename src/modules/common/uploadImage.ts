@@ -1,20 +1,59 @@
-import { catchError } from './utils';
-const cloudinary = require('cloudinary').v2;
+import * as Cloudinary from 'cloudinary';
+import { IAsset } from '../../types';
 
-// configure cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-});
+export const cloudinary = Cloudinary.v2;
+const cloudinaryVid = Cloudinary.v2.uploader
 
-export default async function processImage(base64String?: string) {
-  const { secure_url } = await cloudinary.uploader.upload(
-    base64String,
-    {
-      resource_type: 'auto',
-      chunk_size: 6000000,
-    }).catch((_e) => { throw catchError('Error processing your image', 500) });
-  return secure_url;
+const { CLOUDINARY_NAME, CLOUDINARY_KEY, CLOUDINARY_SECRET } = process.env
+
+
+
+const options: Cloudinary.ConfigOptions = {
+  cloud_name: CLOUDINARY_NAME,
+  api_key: CLOUDINARY_KEY,
+  api_secret: CLOUDINARY_SECRET,
+};
+
+cloudinary.config(options);
+
+export const assetsUpload = async (assets: IAsset[]) => {
+  return await Promise.all(assets.map(async asset => {
+    if (asset.type === 'video') {
+      asset.url = await cloudinaryVidUpload(asset.url)
+      return asset
+    }
+    asset.url = await cloudinaryUpload(asset.url)
+    return asset
+  }))
+   
 }
+
+export const cloudinaryUpload = async (asset: string) => {
+  try {
+    const res = await cloudinary.uploader.upload(asset, {
+      fetch_format: 'auto',
+      crop: 'scale',
+      quality: 'auto',
+    });
+    return res.secure_url;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error);
+  }
+};
+
+
+export const cloudinaryVidUpload = async (asset: string) => {
+  try {
+    const res = await cloudinaryVid.upload(asset, { resource_type: "video",
+    chunk_size: 6000000,
+    eager: [
+      { width: 300, height: 300, crop: "pad", audio_codec: "none" }, 
+      { width: 160, height: 100, crop: "crop", gravity: "south", audio_codec: "none" } ],                                   
+    eager_async: true, });
+    return res.secure_url;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error);
+  }
+};
