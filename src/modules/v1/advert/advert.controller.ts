@@ -164,7 +164,7 @@ export const deleteAdvertProf =async (
 
     if(advert.author !== orgId) throw catchError('Not Allowed', 400)
 
-    await new ProfService('').enterActivity('DELETE', id, orgId, `${advert.caption} was edited`, 'ADVERT')
+    await new ProfService('').enterActivity('DELETE', id, orgId, `${advert.caption} was deleted`, 'ADVERT')
     advert = await new AdvertService(adId).delete()
 
 

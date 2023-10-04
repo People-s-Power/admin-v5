@@ -128,6 +128,7 @@ interface IEvent extends DefaultAttributes {
   audience: string;
   author: string;
   endDate: String;
+  asset: IAsset[];
   image: String[];
   interested: string[];
   startDate: String;

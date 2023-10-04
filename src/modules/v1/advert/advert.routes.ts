@@ -11,7 +11,7 @@ advertRouter.post('/:id', Authenticate, editAdvert)
 advertRouter.delete('/:id', Authenticate, staffPermission(['super-admin']), deleteAdvert)
 
 // Prof
-advertRouter.post('/', Authenticate, staffPermission(['Admin', 'Staff', 'super-admin']), createAdvertRule(), validate, createAdvertProf)
+advertRouter.post('/', Authenticate, staffPermission(['Admin', 'Staff']), createAdvertRule(), validate, createAdvertProf)
 advertRouter.patch('/prof/edit', Authenticate, editAdvertProf)
 advertRouter.put('/delete-advert', Authenticate, staffPermission(['Staff']), deleteAdvertProf)
 

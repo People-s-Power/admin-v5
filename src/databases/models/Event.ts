@@ -11,6 +11,11 @@ enum IStatusEnum {
   Blocked = 'Blocked'
 }
 
+enum IType {
+  online = 'online',
+  offline = 'offline'
+}
+
 const EventSchema: Schema = new Schema<IEvent>({
   name: {
     type: String,
@@ -32,6 +37,18 @@ const EventSchema: Schema = new Schema<IEvent>({
     type: String,
     required: true
   },
+  asset: [
+    {
+      url: {
+        type: String,
+        required: true
+      },
+      type: {
+        type: String,
+        required: true
+      },
+    }
+  ],
   image: [
     {
       type: String
@@ -52,6 +69,7 @@ const EventSchema: Schema = new Schema<IEvent>({
   },
   type: {
     type: String,
+    enum: IType,
     required: true
   },
   shares: [
@@ -103,7 +121,6 @@ const EventSchema: Schema = new Schema<IEvent>({
   ],
   numberOfPaidViewsCount: {
     type: Number,
-    required: true
   },
   category: [{
     type: String,
@@ -113,6 +130,11 @@ const EventSchema: Schema = new Schema<IEvent>({
 {
   collection: "events",
 })
+
+EventSchema.methods.addAsset = function (asset) {
+  this.asset = asset
+  return this.save()
+}
 
 EventSchema.set('timestamps', true)
 

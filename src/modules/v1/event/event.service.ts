@@ -1,9 +1,20 @@
 import db from "../../../databases";
-import { IEvent } from "../../../types";
+import { IEvent, IAsset } from "../../../types";
 import ErrorCodes from "../../common/errorCodes";
+import { assetsUpload } from "../../common/uploadImage";
 import { catchError } from "../../common/utils";
 
-
+interface CreateEvent {
+  name: string; 
+  author: string;
+  description: string;
+  time: string;
+  startDate: string;
+  audience: string;
+  endDate: string;
+  assets: IAsset[];
+  type: string;
+}
 class Eventservice {
   private model = db.Event
   
@@ -13,6 +24,15 @@ class Eventservice {
   constructor(id = '', filter = ''){
     this.filter = filter
     this.id = id
+  }
+
+  public async create (params: CreateEvent) {
+    const asset = await assetsUpload(params.assets)
+    const advert = await this.model.create(params)
+
+    await advert.addAsset(asset)
+
+    return advert
   }
 
 
@@ -29,7 +49,7 @@ class Eventservice {
     return events
   }
 
-  public async findOne() {
+  public async findOne(): Promise<IEvent> {
     const event = await this.model
       .findOne({
         ...(this.id && { _id: this.id })
