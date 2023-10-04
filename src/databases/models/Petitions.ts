@@ -21,6 +21,18 @@ const PetitionSchema: Schema = new Schema<IPetition>({
       type: String
     },
   ],
+  asset: [
+    {
+      url: {
+        type: String,
+        required: true
+      },
+      type: {
+        type: String,
+        required: true
+      },
+    }
+  ],
   aim: {
     type: String,
     required: true
@@ -56,7 +68,6 @@ const PetitionSchema: Schema = new Schema<IPetition>({
   },
   addedFrom: {
     type: String,
-    required: true
   },
   category: {
     type: String,
@@ -68,11 +79,9 @@ const PetitionSchema: Schema = new Schema<IPetition>({
   }],
   numberOfPaidEndorsementCount: {
     type: Number,
-    required: true
   },
   numberOfPaidViewsCount: {
     type: Number,
-    required: true
   },
   likes: [
     {
@@ -132,6 +141,11 @@ const PetitionSchema: Schema = new Schema<IPetition>({
 {
   collection: "petitions",
 })
+
+PetitionSchema.methods.addAsset = function (asset) {
+  this.asset = asset
+  return this.save()
+}
 
 PetitionSchema.set('timestamps', true)
 

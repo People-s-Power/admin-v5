@@ -12,7 +12,7 @@ eventRouter.delete('/:id', Authenticate, staffPermission(['super-admin']), delet
 
 // Prof
 eventRouter.post('/', Authenticate, staffPermission(['Admin', 'Staff']), createEventRule(), validate, createEventProf)
-eventRouter.patch('/prof/edit', Authenticate, staffPermission(['Admin', 'Staff']), editEventProf);
+eventRouter.patch('/prof/edit', Authenticate, editEventProf);
 eventRouter.put('/delete-event', Authenticate, staffPermission(['Staff', 'Admin']), deleteEventProf)
 
 export default eventRouter

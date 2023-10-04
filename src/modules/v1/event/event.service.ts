@@ -28,11 +28,11 @@ class Eventservice {
 
   public async create (params: CreateEvent) {
     const asset = await assetsUpload(params.assets)
-    const advert = await this.model.create(params)
+    const event = await this.model.create(params)
 
-    await advert.addAsset(asset)
+    await event.addAsset(asset)
 
-    return advert
+    return event
   }
 
 

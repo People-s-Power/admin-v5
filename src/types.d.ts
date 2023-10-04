@@ -176,6 +176,7 @@ export interface IEndorsement extends DefaultAttributes {
 interface IPetition extends DefaultAttributes {
   title: string;
   image: string[];
+  asset: IAsset[];
   aim: string;
   target: string;
   body: string;

@@ -1,9 +1,23 @@
 import db from "../../../databases";
-import { IPetition } from "../../../types";
+import { IAsset, IPetition } from "../../../types";
 import ErrorCodes from "../../common/errorCodes";
+import { assetsUpload } from "../../common/uploadImage";
 import { catchError } from "../../common/utils";
 
-
+interface CreatPetition {
+  title: string;
+  category: string;
+  assets: IAsset[];
+  aim: string;
+  author: string;
+  target: string;
+  body: string;
+  excerpt: string;
+  slug: string;
+  numberOfPaidEndorsementCount: number;
+  numberOfPaidViewsCount: number;
+  region: string;
+}
 class PetitionService {
   private model = db.Petition
   
@@ -13,6 +27,15 @@ class PetitionService {
   constructor(id = '', filter = ''){
     this.filter = filter
     this.id = id
+  }
+
+  public async create (params: CreatPetition) {
+    const asset = await assetsUpload(params.assets)
+    const petition = await this.model.create(params)
+
+    await petition.addAsset(asset)
+
+    return petition
   }
 
 
@@ -31,7 +54,7 @@ class PetitionService {
     return petitons
   }
 
-  public async findOne() {
+  public async findOne(): Promise<IPetition> {
     const petition = await this.model
       .findOne({
         ...(this.id && { _id: this.id })
