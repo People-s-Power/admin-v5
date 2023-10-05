@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { catchError, generateToken, success } from "../../common/utils";
 import UpdateService from "./update.service";
+import ProfService from "../auth/prof.service";
 
 export const updates = async (
   req: Request,
@@ -74,6 +75,93 @@ export const deleteUpdate = async (
     return res
         .status(201)
         .json(success("Update Deleted", { update }));
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const createUpdateProf =async (
+  req: any,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.admin.id
+    const {
+      orgId,
+      body,
+      assets,
+      category,
+      petition
+    } = req.body
+
+    await new ProfService(id).checkUser(orgId);
+
+    const update = await new UpdateService('').create({
+      body,
+      assets,
+      category,
+      author: orgId,
+      petition
+    })
+
+    await new ProfService('').enterActivity('CREATE', id, orgId, `A petition update was Created`, 'UPDATE')
+
+    return res
+        .status(201)
+        .json(success("Petition update created successfully", { update }));
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export const editUpdateProf =async (
+  req: any,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.admin.id
+    const { orgId, updateId } = req.body
+    await new ProfService(id).checkUser(orgId);
+    let update = await new UpdateService(updateId).findOne()
+
+    if(update.author !== orgId) throw catchError('Not Allowed', 400)
+    
+    update = await new UpdateService(updateId).updateOne(req.body)
+
+    await new ProfService('').enterActivity('EDIT', id, orgId, `A petition update was edited`, 'UPDATE')
+
+    return res
+        .status(200)
+        .json(success("Petition update updated", { update }));
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const deleteUpdateProf =async (
+  req: any,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.admin.id
+    const { orgId, updateId } = req.body
+    await new ProfService(id).checkUser(orgId);
+    let update = await new UpdateService(updateId).findOne()
+
+    if(update.author !== orgId) throw catchError('Not Allowed', 400)
+
+    update = await new UpdateService(updateId).delete()
+    await new ProfService('').enterActivity('DELETE', id, orgId, `A petition update was deleted`, 'UPDATE')
+
+
+    return res
+        .status(200)
+        .json(success("Petition update Deleted", { update }));
+
   } catch (error) {
     next(error)
   }

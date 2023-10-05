@@ -13,6 +13,6 @@ VictoryRouter.delete('/:id', Authenticate, staffPermission(['super-admin']), del
 // Prof
 VictoryRouter.post('/', Authenticate, staffPermission(['Admin', 'Staff']), createVictoryRule(), validate, createVictoryProf)
 VictoryRouter.patch('/prof/edit', Authenticate, editVictoryProf)
-VictoryRouter.put('/delete-victory', Authenticate,  staffPermission(['Admin', 'Staff']), deleteVictoryProf)
+VictoryRouter.put('/delete-victory', Authenticate,  staffPermission(['Staff']), deleteVictoryProf)
 
 export default VictoryRouter

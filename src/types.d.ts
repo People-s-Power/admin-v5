@@ -204,6 +204,7 @@ interface IUpdate extends DefaultAttributes {
   petition: ObjectId | string;
   body: string;
   image: string[];
+  asset: IAsset[];
   author: string;
   comments: IComments[];
   likes: string[];

@@ -15,7 +15,8 @@ enum ItemType {
   PETITION = 'PETITION',
   EVENT = 'EVENT',
   ADVERT = 'ADVERT',
-  VICTORY = 'VICTORY'
+  VICTORY = 'VICTORY',
+  UPDATE = 'UPDATE'
 }
 
 const ActivitySchema: Schema = new Schema<IActivity>(

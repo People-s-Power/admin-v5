@@ -14,6 +14,18 @@ const UpdateSchema: Schema = new Schema<IUpdate>({
     required: true
   }
   ],
+  asset: [
+    {
+      url: {
+        type: String,
+        required: true
+      },
+      type: {
+        type: String,
+        required: true
+      },
+    }
+  ],
   author:{
     type: String,
     required: true
@@ -67,6 +79,11 @@ const UpdateSchema: Schema = new Schema<IUpdate>({
 },{
   collection: "updates",
 })
+
+UpdateSchema.methods.addAsset = function (asset) {
+  this.asset = asset
+  return this.save()
+}
 
 UpdateSchema.set('timestamps', true)
 

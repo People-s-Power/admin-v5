@@ -1,9 +1,16 @@
 import db from "../../../databases";
-import { IUpdate } from "../../../types";
+import { IAsset, IUpdate } from "../../../types";
 import ErrorCodes from "../../common/errorCodes";
+import { assetsUpload } from "../../common/uploadImage";
 import { catchError } from "../../common/utils";
 
-
+interface CreateUpdate {
+  author: string;
+  body: string;
+  assets: IAsset[];
+  category: string[];
+  petition: string;
+}
 class UpdateService {
   private model = db.Update
   
@@ -13,6 +20,15 @@ class UpdateService {
   constructor(id = '', filter = ''){
     this.filter = filter
     this.id = id
+  }
+
+  public async create (params: CreateUpdate) {
+    const asset = await assetsUpload(params.assets)
+    const update = await this.model.create(params)
+
+    await update.addAsset(asset)
+
+    return update
   }
 
 
@@ -29,7 +45,7 @@ class UpdateService {
     return updates
   }
 
-  public async findOne() {
+  public async findOne(): Promise<IUpdate> {
     const Update = await this.model
       .findOne({
         ...(this.id && { _id: this.id })
