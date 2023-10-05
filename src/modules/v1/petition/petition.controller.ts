@@ -135,7 +135,6 @@ export const editPetitonProf =async (
     const { orgId, petitionId } = req.body
     await new ProfService(id).checkUser(orgId);
     let petition = await new PetitionService(petitionId).findOne()
-    console.log(petition.author, orgId)
 
     if(petition.author !== orgId) throw catchError('Not Allowed', 400)
     
@@ -169,7 +168,7 @@ export const deletePetitionProf =async (
 
 
     return res
-        .status(201)
+        .status(200)
         .json(success("Petiton Deleted", { petition }));
 
   } catch (error) {

@@ -27,6 +27,18 @@ const PostSchema: Schema = new Schema<IPost>({
     required: true
   }
   ],
+  asset: [
+    {
+      url: {
+        type: String,
+        required: true
+      },
+      type: {
+        type: String,
+        required: true
+      },
+    }
+  ],
   shares: [
     {
     type: String,
@@ -78,7 +90,6 @@ const PostSchema: Schema = new Schema<IPost>({
   ],
   numberOfPaidViewsCount: {
     type: Number,
-    required: true
   },
   categories: [
     {
@@ -88,6 +99,11 @@ const PostSchema: Schema = new Schema<IPost>({
 },{
   collection: "posts",
 })
+
+PostSchema.methods.addAsset = function (asset) {
+  this.asset = asset
+  return this.save()
+}
 
 PostSchema.set('timestamps', true)
 

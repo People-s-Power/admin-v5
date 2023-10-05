@@ -1,8 +1,15 @@
 import db from "../../../databases";
-import { IPost } from "../../../types";
+import { IAsset, IPost } from "../../../types";
 import ErrorCodes from "../../common/errorCodes";
+import { assetsUpload } from "../../common/uploadImage";
 import { catchError } from "../../common/utils";
 
+interface CreatePost {
+  author: string;
+  body: string;
+  assets: IAsset[];
+  categories: string[]
+}
 
 class PostService {
   private model = db.Post
@@ -15,6 +22,14 @@ class PostService {
     this.id = id
   }
 
+  public async create (params: CreatePost) {
+    const asset = await assetsUpload(params.assets)
+    const post = await this.model.create(params)
+
+    await post.addAsset(asset)
+
+    return post
+  }
 
   public async findAll(limit?: number, page?: number) {
     const posts = await this.model
@@ -29,7 +44,7 @@ class PostService {
     return posts
   }
 
-  public async findOne() {
+  public async findOne(): Promise<IPost> {
     const post = await this.model
       .findOne({
         ...(this.id && { _id: this.id })

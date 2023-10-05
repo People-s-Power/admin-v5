@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { catchError, generateToken, success } from "../../common/utils";
 import PostService from "./post.service";
+import ProfService from "../auth/prof.service";
 
 export const posts = async (
   req: Request,
@@ -74,6 +75,92 @@ export const deletePost = async (
     return res
         .status(201)
         .json(success("Post Deleted", { post }));
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export const createPostProf =async (
+  req: any,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.admin.id
+    const {
+      orgId,
+      body,
+      assets,
+      categories
+    } = req.body
+
+    await new ProfService(id).checkUser(orgId);
+
+    const post = await new PostService('').create({
+      body,
+      assets,
+      categories,
+      author: orgId
+    })
+
+    await new ProfService('').enterActivity('CREATE', id, orgId, `a post was Created`, 'POST')
+
+    return res
+        .status(201)
+        .json(success("Post created successfully", { post }));
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export const editPostProf =async (
+  req: any,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.admin.id
+    const { orgId, postId } = req.body
+    await new ProfService(id).checkUser(orgId);
+    let post = await new PostService(postId).findOne()
+
+    if(post.author !== orgId) throw catchError('Not Allowed', 400)
+    
+    post = await new PostService(postId).updateOne(req.body)
+
+    await new ProfService('').enterActivity('EDIT', id, orgId, `a post was edited`, 'POST')
+
+    return res
+        .status(200)
+        .json(success("Post updated", { post }));
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const deletePostProf =async (
+  req: any,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.admin.id
+    const { orgId, postId } = req.body
+    await new ProfService(id).checkUser(orgId);
+    let post = await new PostService(postId).findOne()
+
+    if(post.author !== orgId) throw catchError('Not Allowed', 400)
+
+    post = await new PostService(postId).delete()
+    await new ProfService('').enterActivity('DELETE', id, orgId, `a post was deleted`, 'POST')
+
+
+    return res
+        .status(200)
+        .json(success("POST Deleted", { post }));
+
   } catch (error) {
     next(error)
   }

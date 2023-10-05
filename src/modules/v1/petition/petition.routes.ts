@@ -13,6 +13,6 @@ petitionRouter.delete('/:id', Authenticate, staffPermission(['super-admin']), de
 // prof
 petitionRouter.post('/', Authenticate, staffPermission(['Admin', 'Staff']), createPetitionRule(), validate, createPetitionProf)
 petitionRouter.patch('/prof/edit', Authenticate, editPetitonProf)
-petitionRouter.put('/delete-petition', Authenticate, staffPermission(['Staff', 'Admin']), deletePetitionProf)
+petitionRouter.put('/delete-petition', Authenticate, staffPermission(['Staff']), deletePetitionProf)
 
 export default petitionRouter

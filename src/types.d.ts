@@ -224,6 +224,7 @@ interface IPost extends DefaultAttributes {
   status: string;
   comments: IComments[];
   views: string[]
+  asset: IAsset[]
   numberOfPaidViewsCount: number;
   categories: iCategory[];
 }
