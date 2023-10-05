@@ -22,6 +22,18 @@ const VictorySchema: Schema = new Schema<IVictory>({
     required: true
   }
   ],
+  asset: [
+    {
+      url: {
+        type: String,
+        required: true
+      },
+      type: {
+        type: String,
+        required: true
+      },
+    }
+  ],
   shares: [
     {
     type: String,
@@ -66,13 +78,20 @@ const VictorySchema: Schema = new Schema<IVictory>({
       },]
     }
   ],
-  views: {
-    type: String,
-    required: true
-  },
+  views: [
+    {
+      type: String,
+      required: true
+    }
+  ],
 },{
   collection: "victories",
 })
+
+VictorySchema.methods.addAsset = function (asset) {
+  this.asset = asset
+  return this.save()
+}
 
 VictorySchema.set('timestamps', true)
 

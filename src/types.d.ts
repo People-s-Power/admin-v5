@@ -327,6 +327,7 @@ interface IVictory extends DefaultAttributes {
   author: string;
   status: string;
   comments: IComments[];
+  asset: IAsset[]
   views: string;
 }
 

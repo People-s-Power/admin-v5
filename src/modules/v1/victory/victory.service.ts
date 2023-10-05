@@ -1,8 +1,12 @@
 import db from "../../../databases";
-import { IVictory } from "../../../types";
+import { IAsset, IVictory } from "../../../types";
 import ErrorCodes from "../../common/errorCodes";
+import { assetsUpload } from "../../common/uploadImage";
 import { catchError } from "../../common/utils";
 
+interface CreateVictory {
+  body: string, author: string, assets: IAsset[]
+}
 
 class VictoryService {
   private model = db.Victory
@@ -13,6 +17,16 @@ class VictoryService {
   constructor(id = '', filter = ''){
     this.filter = filter
     this.id = id
+  }
+
+
+  public async create (params: CreateVictory) {
+    const asset = await assetsUpload(params.assets)
+    const victory = await this.model.create(params)
+
+    await victory.addAsset(asset)
+
+    return victory
   }
 
 
@@ -28,7 +42,7 @@ class VictoryService {
     return victories
   }
 
-  public async findOne() {
+  public async findOne(): Promise<IVictory> {
     const victory = await this.model
       .findOne({
         ...(this.id && { _id: this.id })
