@@ -386,3 +386,49 @@ enum ItemType {
   ADVERT = 'ADVERT',
   VICTORY = 'VICTORY'
 }
+
+interface IWallet extends DefaultAttributes{
+  balance: number;
+  userId: ObjectId | string;
+  userType: string;
+}
+
+interface IWalletTransaction extends DefaultAttributes {
+  amount: number;
+  userId: ObjectId | string;
+  isInflow: boolean;
+  paymentMethod: string;
+  currency: ICurrency;
+  status: IPaymentStatus;
+  walletId: string
+}
+
+interface IWithdraw extends DefaultAttributes, IVerifyBankAccount{
+  amount: number;
+  userId: ObjectId | string;
+  account_bank: number;
+  bank_name: string;
+  status: IPaymentStatus;
+  tx_ref: string;
+}
+
+interface IVerifyBankAccount {
+  account_number: string;
+  account_name: string;
+}
+
+export enum DurationEnum {
+  TRIAL = 'TRIAL',
+  MONTHLY = 'MONTHLY',
+  YEARLY = 'YEARLY'
+}
+
+interface ISubscription extends DefaultAttributes {
+  author: string;
+  amount: number;
+  duration: DurationEnum;
+  autoRenew: boolean;
+  expired: boolean;
+  grace: boolean;
+  assignedProf: string;
+}

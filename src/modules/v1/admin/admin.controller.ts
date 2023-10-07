@@ -211,9 +211,9 @@ export const assign = async (
   next: NextFunction
 ) => {
   try {
-    const { userId, orgId } = req.body;
-
-    const result = await new AdminService('', '', '').assign(userId, orgId)
+    const { userId, orgId, subId } = req.body;
+    if(!userId || !orgId || !subId) catchError('Invalid values', 400)
+    const result = await new AdminService('', '', '').assign(userId, orgId, subId)
 
     return res
         .status(201)

@@ -24,6 +24,7 @@ class AdminService {
   private model = db.admin;
   private userModel = db.user;
   private orgModel = db.Organization;
+  private subModel = db.Subscriptionprof
   private oneToOneMessageModel = db.Message;
 
   private id: string;
@@ -227,7 +228,7 @@ class AdminService {
   }
 
 
-  public async assign(userId, orgId) {
+  public async assign(userId, orgId, subId) {
     const user = await this.userModel.findById(userId)
     if(!user) throw catchError('User not found', 404);
     if(user.accountType === 'Campaigner') throw catchError('Not allowed user is a Campaigner', 400);
@@ -237,6 +238,11 @@ class AdminService {
 
     user.orgOperating.push(orgId)
     await user.save()
+
+    await this.subModel.findOneAndUpdate({ _id: subId }, { assignedProf: userId }, { new: true })
+    .catch((e) => {
+      throw e;
+    });
 
     const result = new UserService('', '', '').getUser(user)
     return result;

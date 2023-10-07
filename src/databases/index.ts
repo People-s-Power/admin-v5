@@ -13,6 +13,7 @@ import Transaction from "./models/Transaction";
 import Advert from "./models/Advert";
 import Message from "./models/Message";
 import Activity from "./models/Activity";
+import Subscriptionprof from "./models/Subscription";
 
 const db = {
     admin,
@@ -28,7 +29,8 @@ const db = {
     Report,
     Share,
     Message,
-    Activity
+    Activity,
+    Subscriptionprof
 }
 
 export default db;
