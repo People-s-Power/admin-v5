@@ -13,6 +13,7 @@ import reportRouter from "./report/report.routes";
 import txRouter from "./transaction/tx.routes";
 import authRouter from "./auth/auth.routes";
 import subscriptionRouter from "./admin/subscriptions.routes";
+import withdrawRouter from "./withdraw/withdraw.routes";
 
 const router = Router();
 
@@ -30,6 +31,7 @@ router.use('/report', reportRouter)
 router.use('/tx', txRouter)
 router.use('/auth', authRouter)
 router.use('/sub', subscriptionRouter)
+router.use('/withdraw', withdrawRouter)
 
 router.use("/", async (_req, res: Response, _next: NextFunction) =>
   res.send("Welcome to People-pow admin API")

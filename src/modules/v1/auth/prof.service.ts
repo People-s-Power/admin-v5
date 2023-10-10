@@ -1,4 +1,5 @@
 
+import mongoose from "mongoose";
 import db from "../../../databases";
 import { IUser } from "../../../types";
 import { catchError } from "../../common/utils";
@@ -42,6 +43,31 @@ class ProfService {
     })
 
     return activity;
+  }
+
+  public async fetchActivities(page:number, limit:number, userId?: string, orgId?: string) {
+    const org = new mongoose.Types.ObjectId(orgId)
+    const user = new mongoose.Types.ObjectId(userId)
+
+    const count = await this.activityModel.find({
+      ...(userId && ({ authorId: user })),
+      ...(orgId && ({ orgId: org }))
+    }).count()
+
+    const activities = await this.activityModel.find({
+      ...(userId && ({ authorId: user })),
+      ...(orgId && ({ orgId: org }))
+    })
+    .sort('-createdAt')
+    .skip((page - 1) * limit)
+    .limit(limit)
+
+    const totalPages = Math.ceil(count / limit);
+
+    return {
+      activities,
+      totalPages
+    }
   }
 }
 

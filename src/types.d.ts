@@ -162,6 +162,7 @@ interface IOrgnaization extends DefaultAttributes {
   isActive: boolean;
   city: string;
   website: string;
+  recipient_code: string,
   socketId: string;
 }
 
@@ -289,7 +290,7 @@ interface IUser extends DefaultAttributes {
   accountType: string;
   image: string;
   firstName: string;
-
+  recipient_code: string;
   lastName: string;
   description: string;
   otherName: string;
@@ -407,9 +408,8 @@ interface IWithdraw extends DefaultAttributes, IVerifyBankAccount{
   amount: number;
   userId: ObjectId | string;
   account_bank: number;
-  bank_name: string;
+  bank_code: string;
   status: IPaymentStatus;
-  tx_ref: string;
 }
 
 interface IVerifyBankAccount {

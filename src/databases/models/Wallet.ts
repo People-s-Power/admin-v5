@@ -10,16 +10,9 @@ export enum WalletUserType {
 
 const walletSchema:Schema = new Schema<IWallet>(
   {
-    balance: { type: Number, default: 0 },
-    userId: {
-      type: String,
-      required: true,
-    },
-    userType: {
-      type: String,
-      enum: WalletUserType,
-      required: true
-    }
+    balance: Number,
+    userId: String,
+    userType: String
   },
   {
     autoIndex: true,
@@ -30,6 +23,6 @@ const walletSchema:Schema = new Schema<IWallet>(
 
 walletSchema.set('timestamps', true)
 
-const Wallet = db.model<IWallet>('Wallet', walletSchema)
+const Wallet = db.model<IWallet>('wallets', walletSchema)
 
 export default Wallet

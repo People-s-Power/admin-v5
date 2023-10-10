@@ -14,6 +14,9 @@ import Advert from "./models/Advert";
 import Message from "./models/Message";
 import Activity from "./models/Activity";
 import Subscriptionprof from "./models/Subscription";
+import Withdraws from "./models/Withdrawal";
+import Wallet from "./models/Wallet";
+import WalletTransaction from "./models/WalletTx";
 
 const db = {
     admin,
@@ -30,7 +33,10 @@ const db = {
     Share,
     Message,
     Activity,
-    Subscriptionprof
+    Subscriptionprof,
+    Withdraws,
+    Wallet,
+    WalletTransaction
 }
 
 export default db;

@@ -38,10 +38,12 @@ const walletTransactionSchema: Schema = new Schema<IWalletTransaction>({
 },{
   autoIndex: true,
   versionKey: false,
-  collection: "walletTransactions",
+  collection: "wallettransactions",
 })
 
 
 walletTransactionSchema.set('timestamps', true)
 
 const WalletTransaction = db.model<IWalletTransaction>('WalletTransaction', walletTransactionSchema)
+
+export default WalletTransaction

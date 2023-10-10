@@ -5,6 +5,8 @@ import UserService from "../user/user.service";
 import { AuthenticatedRequest } from "../../../types";
 import { hashPassword, matchPassword } from "../../common/hashing";
 import { catchError, generateToken, success } from "../../common/utils";
+import ProfService from "./prof.service";
+import { number } from "../../../swaggerTypes";
 
 export enum AccountTypeEnum {
   Campaigner = 'Campaigner',
@@ -157,6 +159,24 @@ export const updatePassword =async (
       .status(200)
       .json(success("Password updated successfully", { user: result }));
 
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const fetchActivities =async (
+  req: any,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { page, limit } = req.query
+    const { userId, orgId } = req.body
+
+    const activities = await new ProfService('').fetchActivities(Number(page), Number(limit), userId, orgId)
+    return res
+      .status(200)
+      .json(success("Activities retrieved successfully", { activities }));
   } catch (error) {
     next(error)
   }
