@@ -181,3 +181,72 @@ export const fetchActivities =async (
     next(error)
   }
 }
+
+export const getTasks =async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { page, limit, orgId, prof, assigned, status } = req.query
+  const tasks = await new ProfService('').getTasks(Number(page), Number(limit), orgId, prof, assigned, status)
+
+  return res
+      .status(200)
+      .json(success("Tasks retrieved", { tasks }));
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const updateTask =async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params
+    const { status, prof } = req.body
+    const task =  await new ProfService('').updateTask(id, status, prof)
+
+    return res
+      .status(200)
+      .json(success("Tasks retrieved", { task }));
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getReviews = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { page, limit, userId, author } = req.query
+    const reviews = await new ProfService('').getReviews(Number(page), Number(limit), userId, author)
+
+    return res
+      .status(200)
+      .json(success("Reviews retrieved", { reviews }));
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const createReview =async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { body, rating, userId, author } = req.body
+    const review = await new ProfService('').createReview(body, rating, userId, author)
+
+    return res
+      .status(201)
+      .json(success("Review created", { review }));
+  } catch (error) {
+    next(error)
+  }
+}

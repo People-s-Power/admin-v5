@@ -16,6 +16,7 @@ const categories = [
   'Accounting',
   'Design',
   'Marketing',
+  'Education',
   'Coaching and Mentoring',
   'Information Technology',
   'Law',

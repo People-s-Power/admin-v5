@@ -432,3 +432,20 @@ interface ISubscription extends DefaultAttributes {
   grace: boolean;
   assignedProf: string;
 }
+
+interface ITask extends DefaultAttributes {
+  name: string
+  dueDate: string
+  dueTime: string
+  author: string
+  prof: string
+  assigne: string[]
+  status: string
+}
+
+interface IReview extends DefaultAttributes {
+  body: string
+  rating: number
+  author: string
+  userId: string
+}

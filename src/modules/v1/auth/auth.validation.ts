@@ -32,6 +32,18 @@ export const editRule = () => [
   .isEmpty()
 ];
 
+export const updateTaskRule = () => [
+  body("status").isIn(['DONE' , 'OPEN']).withMessage('Status can be either OPEN or DONE').notEmpty(),
+  body("prof").notEmpty()
+];
+
+export const reviewRule = () => [
+  body("body").notEmpty(),
+  body("rating").isNumeric().notEmpty(),
+  body("userId").notEmpty(),
+  body("author").notEmpty()
+];
+
 export const editPasswordRule = () => [
   body('oldPassword').notEmpty(),
   body('password').isStrongPassword({ minLength: 10, minNumbers: 1, minSymbols: 1 }).withMessage('Password must contain 1 number, 1 special character and 10 characters long').notEmpty()

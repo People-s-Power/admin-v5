@@ -17,6 +17,8 @@ import Subscriptionprof from "./models/Subscription";
 import Withdraws from "./models/Withdrawal";
 import Wallet from "./models/Wallet";
 import WalletTransaction from "./models/WalletTx";
+import Task from "./models/Task";
+import Review from "./models/Review";
 
 const db = {
     admin,
@@ -36,7 +38,9 @@ const db = {
     Subscriptionprof,
     Withdraws,
     Wallet,
-    WalletTransaction
+    WalletTransaction,
+    Task,
+    Review
 }
 
 export default db;

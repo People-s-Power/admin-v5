@@ -15,6 +15,7 @@ const categories = [
   'human right action',
   'Accounting',
   'Design',
+  'Education',
   'Marketing',
   'Coaching and Mentoring',
   'Information Technology',

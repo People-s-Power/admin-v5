@@ -8,6 +8,8 @@ class ProfService {
   private userModel = db.user;
   private orgModel = db.Organization;
   private activityModel = db.Activity;
+  private taskModel = db.Task;
+  private reviewModel = db.Review
 
   private id: string;
 
@@ -69,6 +71,133 @@ class ProfService {
       totalPages
     }
   }
+
+  public async getTasks(page:number, limit:number, orgId?: any, prof?: any, assigned?: any, status?: any) {
+    const count = await this.taskModel.find({
+      ...( status && { status }),
+      ...( orgId && { author: orgId }),
+      ...(assigned && { assigne: { $in: [assigned] } }),
+      ...(prof && { prof })
+    }).count()
+
+    const taskList = await this.taskModel.find({
+      ...( status && { status }),
+      ...( orgId && { author: orgId }),
+      ...(assigned && { assigne: { $in: [assigned] } }),
+      ...(prof && { prof })
+    })
+    .sort("-createdAt")
+    .limit(limit)
+    .skip(limit * (page - 1))
+    .catch(e => { throw e; });
+
+    const totalPages = Math.ceil(count / limit);
+
+    const tasks = await Promise.all(
+      taskList.map(async task => {
+        return {
+          ...task._doc,
+          author: await this.populateAuthor(task.author),
+          prof: await this.populateAuthor(task.prof)
+        }
+      })
+    )
+
+    return {
+      tasks,
+      totalPages
+    }
+  }
+
+  public async updateTask(id: string, status:any, prof: any) {
+    return await this.taskModel.findOneAndUpdate({ _id: id }, { status, prof }, { new: true })
+    .catch((e) => {
+      throw e;
+    });
+  }
+
+  async getReviews(page: number, limit: number, userId?: any, author?: any) {
+    const count = await this.reviewModel.find({
+      ...( author && { author }),
+      ...( userId && { author: userId })
+    }).count()
+
+    const reviewList = await this.reviewModel.find({
+      ...( author && { author }),
+      ...( userId && { author: userId }),
+    })
+    .sort("-createdAt")
+    .limit(limit)
+    .skip(limit * (page - 1))
+    .catch(e => { throw e; });
+
+    const totalPages = Math.ceil(count / limit);
+
+    const reviews = await Promise.all(
+      reviewList.map(async review => {
+        return {
+          ...review._doc,
+          author: await this.populateAuthor(review.author),
+          userId: await this.populateAuthor(review.userId)
+        }
+      })
+    )
+
+    return {
+      reviews,
+      totalPages
+    }
+  }
+
+  async createReview(body:string, rating: number, userId: string, author: string) {
+    const review = await this.reviewModel.create({
+      body,
+      rating,
+      userId,
+      author
+    })
+
+    return review
+  }
+
+  async deleteReview (id:string) {
+    return await this.reviewModel.findByIdAndDelete(id)
+  }
+
+  async populateAuthor(authorId: string) {
+    const [user, org] = await Promise.all([
+      this.userModel.findById(authorId),
+      this.orgModel.findById(authorId),
+    ])
+
+    if (user) {
+      return {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        description: user.description
+      };
+    }
+    if (org) {
+      return {
+        _id: org._id,
+        name: org.name,
+        email: org.email,
+        image: org.image,
+        description: org.description
+      };
+    }
+
+    return {
+      _id: 'User deleted',
+      name: 'User deleted',
+      email: 'User deleted',
+      image: 'User deleted',
+      description: 'User deleted'
+    };
+  }
+
 }
 
 export default ProfService;
