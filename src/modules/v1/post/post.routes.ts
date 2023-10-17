@@ -2,10 +2,11 @@ import { Router } from 'express';
 import {  createPostProf, deletePost, deletePostProf, editPost, editPostProf, post, posts } from './post.controller';
 import { Authenticate, staffPermission, validate } from '../../common/utils';
 import { createPostRule } from './post.validation';
+import { findRule } from '../advert/advert.validation';
 
 const postRouter = Router()
 
-postRouter.get('/', Authenticate, posts)
+postRouter.get('/', Authenticate,findRule(), validate, posts)
 postRouter.get('/:id', Authenticate, post)
 postRouter.post('/:id', Authenticate, editPost)
 postRouter.delete('/:id', Authenticate, staffPermission(['super-admin']), deletePost)

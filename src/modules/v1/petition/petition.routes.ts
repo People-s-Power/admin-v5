@@ -2,10 +2,11 @@ import { Router } from 'express';
 import {  createPetitionProf, deletePetition, deletePetitionProf, editPetiton, editPetitonProf, petiton, petitons } from './petition.controller';
 import { Authenticate, staffPermission, validate } from '../../common/utils';
 import { createPetitionRule } from './petition.validation';
+import { findRule } from '../advert/advert.validation';
 
 const petitionRouter = Router()
 
-petitionRouter.get('/', Authenticate, petitons)
+petitionRouter.get('/', Authenticate, findRule(), validate, petitons)
 petitionRouter.get('/:id', Authenticate, petiton)
 petitionRouter.post('/:id', Authenticate, editPetiton)
 petitionRouter.delete('/:id', Authenticate, staffPermission(['super-admin']), deletePetition)

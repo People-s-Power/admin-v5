@@ -20,10 +20,12 @@ class Eventservice {
   
   private id: string
   private filter: string
+  private authorId: string
 
-  constructor(id = '', filter = ''){
+  constructor(id = '', filter = '', authorId = ''){
     this.filter = filter
     this.id = id
+    authorId = authorId
   }
 
   public async create (params: CreateEvent) {
@@ -36,17 +38,26 @@ class Eventservice {
   }
 
 
-  public async findAll(limit?: number, page?: number) {
+  public async findAll(limit?: number, page?: number, author?: any) {
+    const count = await this.model
+    .find(
+      {
+        ...(author && { author })
+      }
+    ).count()
+
     const events = await this.model
-    .find()
+    .find({
+      ...(author && { author })
+    })
     .sort("-createdAt")
     .limit(limit)
     .skip(limit * (page - 1))
     .catch(e => { throw e; });
 
     // const pets = await this.model.find()
-    console.log(events)
-    return events
+    const totalPages = Math.ceil(count / limit);
+    return {events, totalPages}
   }
 
   public async findOne(): Promise<IEvent> {

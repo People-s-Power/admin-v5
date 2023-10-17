@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import {  deleteAdvert, editAdvert, advert, adverts, createAdvertProf, editAdvertProf, deleteAdvertProf } from './advert.controller';
 import { Authenticate, staffPermission, validate } from '../../common/utils';
-import { createAdvertRule, deleteAdvertRule } from './advert.validation';
+import { createAdvertRule, deleteAdvertRule, findRule } from './advert.validation';
 
 const advertRouter = Router()
 
-advertRouter.get('/', Authenticate, adverts)
+advertRouter.get('/', Authenticate, findRule(), validate, adverts)
 advertRouter.get('/:id', Authenticate, advert)
 advertRouter.post('/:id', Authenticate, editAdvert)
 advertRouter.delete('/:id', Authenticate, staffPermission(['super-admin']), deleteAdvert)

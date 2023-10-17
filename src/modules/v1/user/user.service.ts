@@ -7,6 +7,7 @@ import { endOfDay, startOfDay, subDays } from "date-fns";
 
 class UserService {
   private userModel = db.user;
+  private orgModel = db.Organization
 
   private id: string;
 
@@ -95,7 +96,34 @@ class UserService {
     return user
   }
 
-  public getUser(u: IUser) {
+
+  async populateAuthor(authorId: string) {
+    const org = await this.orgModel.findById(authorId)
+
+    if (org) {
+      return {
+        _id: org._id,
+        name: org.name,
+        email: org.email,
+        image: org.image,
+        description: org.description
+      };
+    }
+
+    return {
+      _id: 'Org deleted',
+      name: 'Org deleted',
+      email: 'Org deleted',
+      image: 'Org deleted',
+      description: 'Org deleted'
+    };
+  }
+
+  public async getUser(u: IUser) {
+    let org = []
+    if (u.orgOperating.length) {
+      org = await Promise.all(u.orgOperating.map(async org => await this.populateAuthor(org)))
+    }
     return {
       id: u._id,
       city: u.city,
@@ -111,7 +139,7 @@ class UserService {
       accountType: u.accountType,
       followers: u.followers,
       following: u.following,
-      orgOperating: u.orgOperating,
+      orgOperating: org,
       createdOrg: u.createdOrg,
       lastSeen: u.lastSeen,
       createdAt: u.createdAt,

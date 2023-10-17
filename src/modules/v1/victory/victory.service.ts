@@ -30,16 +30,27 @@ class VictoryService {
   }
 
 
-  public async findAll(limit?: number, page?: number) {
+  public async findAll(limit?: number, page?: number, author?:any) {
+    const count = await this.model
+    .find(
+      {
+        ...(author && { author })
+      }
+    ).count()
+
+
     const victories = await this.model
-    .find()
+    .find({
+      ...(author && { author })
+    })
     .sort("-createdAt")
     .limit(limit)
     .skip(limit * (page - 1))
     .catch(e => { throw e; });
 
+    const totalPages = Math.ceil(count / limit);
 
-    return victories
+    return {victories, totalPages}
   }
 
   public async findOne(): Promise<IVictory> {

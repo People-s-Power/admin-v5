@@ -39,9 +39,19 @@ class PetitionService {
   }
 
 
-  public async findAll(limit?: number, page?: number) {
+  public async findAll(limit?: number, page?: number, author?: any) {
+    const count = await this.model
+    .find(
+      {
+        ...(author && { author })
+      }
+    ).count()
+
+
     const petitons = await this.model
-    .find()
+    .find({
+      ...(author && { author: author })
+    })
     .sort("-createdAt")
     .populate('updates')
     .populate('endorsements')
@@ -50,8 +60,8 @@ class PetitionService {
     .catch(e => { throw e; });
 
     // const pets = await this.model.find()
-    console.log(petitons)
-    return petitons
+    const totalPages = Math.ceil(count / limit);
+    return {petitons, totalPages}
   }
 
   public async findOne(): Promise<IPetition> {

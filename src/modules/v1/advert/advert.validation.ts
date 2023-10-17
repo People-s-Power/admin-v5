@@ -18,3 +18,8 @@ export const deleteAdvertRule = () => [
   body('orgId').isString().withMessage('Enter orgId').notEmpty(),
   body('adId').isArray().withMessage('Enter adId').notEmpty(),
 ]
+
+export const findRule = () => [
+  query('page').notEmpty(),
+  query('limit').notEmpty()
+]

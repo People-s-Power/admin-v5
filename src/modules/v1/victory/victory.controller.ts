@@ -9,9 +9,15 @@ export const victories = async (
   next: NextFunction
 ) => {
   try {
-    const { filter, page, limit } = req.query
+    let { filter, page, limit, authorId } = req.query
 
-    const victories = await new VictoryService("", String(filter)).findAll(Number(limit), Number(page))
+    if (String(authorId) === 'undefined') {
+      authorId = null
+    }
+
+    const author = authorId
+
+    const victories = await new VictoryService("", String(filter)).findAll(Number(limit), Number(page), author)
     
 
     return res

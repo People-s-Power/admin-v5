@@ -31,17 +31,27 @@ class PostService {
     return post
   }
 
-  public async findAll(limit?: number, page?: number) {
+  public async findAll(limit?: number, page?: number, author?: any) {
+    const count = await this.model
+    .find(
+      {
+        ...(author && { author })
+      }
+    ).count()
+
+
     const posts = await this.model
-    .find()
+    .find({
+        ...(author && { author })
+      })
     .sort("-createdAt")
     .limit(limit)
     .skip(limit * (page - 1))
     .catch(e => { throw e; });
 
     // const pets = await this.model.find()
-    console.log(posts)
-    return posts
+    const totalPages = Math.ceil(count / limit);
+    return {posts, totalPages}
   }
 
   public async findOne(): Promise<IPost> {

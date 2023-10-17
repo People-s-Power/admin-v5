@@ -30,7 +30,6 @@ export const singleUser = async (
     const param = req.params.id
   
     const user = await new UserService("", "", param).findOne()
-    console.log(user)
 
     const result = await new UserService().getUser(user)
 

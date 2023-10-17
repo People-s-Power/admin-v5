@@ -23,10 +23,12 @@ class AdvertService {
   
   private id: string
   private filter: string
+  private authorId: string
 
-  constructor(id = '', filter = ''){
+  constructor(id = '', filter = '', authorId = ''){
     this.filter = filter
     this.id = id
+    this.authorId = authorId
   }
 
   public async create (params: CreateAdvert) {
@@ -38,15 +40,30 @@ class AdvertService {
     return advert
   }
 
-  public async findAll(limit?: number, page?: number) {
+  public async findAll(limit: number, page: number, authorId?: any ) {
+    const count = await this.model
+    .find(
+      {
+        ...(authorId && { author: authorId })
+      }
+    ).count()
     const advert = await this.model
-    .find()
+    .find(
+      {
+        ...(this.authorId && { author: this.authorId })
+      }
+    )
     .sort("-createdAt")
     .limit(limit)
     .skip(limit * (page - 1))
     .catch(e => { throw e; });
 
-    return advert
+    const totalPages = Math.ceil(count / limit);
+
+    return {
+      advert,
+      totalPages
+    }
   }
 
   public async findOne(): Promise<IAdvert> {
