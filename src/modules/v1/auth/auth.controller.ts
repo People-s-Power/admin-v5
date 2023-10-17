@@ -69,7 +69,7 @@ export const login = async (
       role: user?.accountType,
       email: user.email,
     });
-    const result = userService.getUser(user)
+    const result = await userService.getUser(user)
     return res
       .status(200)
       .json(success("Logged in successfully", { user: result }, { token }));
@@ -107,7 +107,7 @@ export const become = async (
       email: user.email,
     });
 
-    const result = userService.getUser(user)
+    const result = await userService.getUser(user)
     return res
       .status(200)
       .json(success("Logged in successfully", { user: result }, { token }));
