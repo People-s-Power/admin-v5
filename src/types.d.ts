@@ -439,6 +439,8 @@ interface ITask extends DefaultAttributes {
   dueTime: string
   author: string
   prof: string
+  asset: IAsset[];
+  instruction: string;
   assigne: string[]
   status: string
 }

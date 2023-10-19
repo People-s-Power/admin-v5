@@ -13,6 +13,19 @@ const TaskSchema: Schema = new Schema<ITask>({
       type: String
     }
   ],
+  asset: [
+    {
+      url: {
+        type: String,
+        required: true
+      },
+      type: {
+        type: String,
+        required: true
+      },
+    }
+  ],
+  instruction: String,
   status: String,
 },{
   collection: "tasks",
