@@ -51,13 +51,13 @@ class WithdrawService {
 
   public async transfer(withdrawId: string) {
     const withdraw = await this.model.findById(withdrawId)
-    if (!withdraw) catchError('Request not found', 404)
-    if(withdraw.status === IPaymentStatus.success) catchError('Withdraw request already approved', 400)
+    if (!withdraw) throw catchError('Request not found', 404)
+    if(withdraw.status === IPaymentStatus.success) throw catchError('Withdraw request already approved', 400)
     const user = await Promise.all([
       this.userModel.findById(withdraw.userId),
       this.orgModel.findById(withdraw.userId),
     ]).catch((e) => {
-       catchError('User or org not found', 404);
+       throw catchError('User or org not found', 404);
     });
 
     let recipient_code
