@@ -238,6 +238,12 @@ class AdminService {
 
     user.orgOperating.push(orgId)
     await user.save()
+    org.operators.push({
+      userId,
+      role: user.accountType      
+    })
+
+    await org.save()
 
     await this.subModel.findOneAndUpdate({ _id: subId }, { assignedProf: userId }, { new: true })
     .catch((e) => {
