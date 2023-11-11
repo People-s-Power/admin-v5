@@ -102,7 +102,7 @@ export const createAdvertProf =async (
       author: orgId
     })
 
-    await new ProfService('').enterActivity('CREATE', id, orgId, `${advert.caption} was Created`, 'ADVERT')
+    await new ProfService('').enterActivity('CREATE', id, orgId, ` created an advert ${advert.caption}`, 'ADVERT')
 
     return res
         .status(201)
@@ -127,7 +127,7 @@ export const editAdvertProf =async (
     
     advert = await new AdvertService(adId).updateOne(req.body)
 
-    await new ProfService('').enterActivity('EDIT', id, orgId, `${advert.caption} was edited`, 'ADVERT')
+    await new ProfService('').enterActivity('EDIT', id, orgId, ` edited an advert ${advert.caption}`, 'ADVERT')
 
     return res
         .status(200)
@@ -167,7 +167,7 @@ export const deleteAdvertProf =async (
 
     if(advert.author !== orgId) throw catchError('Not Allowed', 400)
 
-    await new ProfService('').enterActivity('DELETE', id, orgId, `${advert.caption} was deleted`, 'ADVERT')
+    await new ProfService('').enterActivity('DELETE', id, orgId, ` deleted an advert ${advert.caption}`, 'ADVERT')
     advert = await new AdvertService(adId).delete()
 
 

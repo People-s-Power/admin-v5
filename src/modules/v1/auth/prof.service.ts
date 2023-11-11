@@ -36,11 +36,12 @@ class ProfService {
   }
 
   public async enterActivity(type: string, authorId: string, orgId: string, text: string, item: string) {
+    const user = await this.userModel.findById(authorId)
     const activity = await this.activityModel.create({
       orgId,
       activity_type: type,
       authorId,
-      text,
+      text: `${user.name}${text}`,
       item
     })
 

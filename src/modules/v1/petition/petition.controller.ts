@@ -120,7 +120,7 @@ export const createPetitionProf =async (
       region: country
     })
 
-    await new ProfService('').enterActivity('CREATE', id, orgId, `${petition.title} was Created`, 'PETITION')
+    await new ProfService('').enterActivity('CREATE', id, orgId, ` created a petition ${petition.title}`, 'PETITION')
 
     return res
         .status(201)
@@ -146,7 +146,7 @@ export const editPetitonProf =async (
     
     petition = await new PetitionService(petitionId).updateOne(req.body)
 
-    await new ProfService('').enterActivity('EDIT', id, orgId, `${petition.title} was edited`, 'PETITION')
+    await new ProfService('').enterActivity('EDIT', id, orgId, ` edited a petition${petition.title}`, 'PETITION')
 
     return res
         .status(200)
@@ -170,7 +170,7 @@ export const deletePetitionProf =async (
     if(petition.author !== orgId) throw catchError('Not Allowed', 400)
 
     petition = await new PetitionService(petitionId).delete()
-    await new ProfService('').enterActivity('DELETE', id, orgId, `${petition.title} was deleted`, 'PETITION')
+    await new ProfService('').enterActivity('DELETE', id, orgId, ` deleted a petition ${petition.title}`, 'PETITION')
 
 
     return res

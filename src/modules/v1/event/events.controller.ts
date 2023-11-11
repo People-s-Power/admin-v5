@@ -101,7 +101,7 @@ export const createEventProf =async (
       author: orgId
     })
 
-    await new ProfService('').enterActivity('CREATE', id, orgId, `${event.name} was Created`, 'EVENT')
+    await new ProfService('').enterActivity('CREATE', id, orgId, ` created an event ${event.name}`, 'EVENT')
 
     return res
         .status(201)
@@ -128,7 +128,7 @@ export const editEventProf =async (
     
     event = await new EventService(edId).updateOne(req.body)
 
-    await new ProfService('').enterActivity('EDIT', id, orgId, `${event.name} was edited`, 'EVENT')
+    await new ProfService('').enterActivity('EDIT', id, orgId, ` edited an event ${event.name}`, 'EVENT')
 
     return res
         .status(200)
@@ -170,7 +170,7 @@ export const deleteEventProf =async (
     if(event.author !== orgId) throw catchError('Not Allowed', 400)
 
     event = await new EventService(eId).delete()
-    await new ProfService('').enterActivity('DELETE', id, orgId, `${event.name} was deleted`, 'EVENT')
+    await new ProfService('').enterActivity('DELETE', id, orgId, ` deleted an event ${event.name}`, 'EVENT')
 
 
     return res

@@ -131,7 +131,7 @@ export const editUpdateProf =async (
     
     update = await new UpdateService(updateId).updateOne(req.body)
 
-    await new ProfService('').enterActivity('EDIT', id, orgId, `A petition update was edited`, 'UPDATE')
+    await new ProfService('').enterActivity('EDIT', id, orgId, ` edited a petition update`, 'UPDATE')
 
     return res
         .status(200)
@@ -155,7 +155,7 @@ export const deleteUpdateProf =async (
     if(update.author !== orgId) throw catchError('Not Allowed', 400)
 
     update = await new UpdateService(updateId).delete()
-    await new ProfService('').enterActivity('DELETE', id, orgId, `A petition update was deleted`, 'UPDATE')
+    await new ProfService('').enterActivity('DELETE', id, orgId, ` deleted a petition update`, 'UPDATE')
 
 
     return res

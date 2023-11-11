@@ -110,7 +110,7 @@ export const createPostProf =async (
       author: orgId
     })
 
-    await new ProfService('').enterActivity('CREATE', id, orgId, `a post was Created`, 'POST')
+    await new ProfService('').enterActivity('CREATE', id, orgId, ` created a post`, 'POST')
 
     return res
         .status(201)
@@ -136,7 +136,7 @@ export const editPostProf =async (
     
     post = await new PostService(postId).updateOne(req.body)
 
-    await new ProfService('').enterActivity('EDIT', id, orgId, `a post was edited`, 'POST')
+    await new ProfService('').enterActivity('EDIT', id, orgId, ` edited a post`, 'POST')
 
     return res
         .status(200)
@@ -160,7 +160,7 @@ export const deletePostProf =async (
     if(post.author !== orgId) throw catchError('Not Allowed', 400)
 
     post = await new PostService(postId).delete()
-    await new ProfService('').enterActivity('DELETE', id, orgId, `a post was deleted`, 'POST')
+    await new ProfService('').enterActivity('DELETE', id, orgId, ` deleted a post`, 'POST')
 
 
     return res
